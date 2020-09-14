@@ -1,0 +1,267 @@
+<div class="card">
+    <div class="card-header header-title">
+
+        <div class="row">
+            <div class="col-12">
+                <h4><i class="nav-icon fa fa-product-hunt"></i> Productos</h4>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="card-body" style="padding: 0px;">
+        <div class="row" style="padding: 1rem 1.25rem;">
+            <div class="col-3 text-left">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        </div>
+                        <input #search type="text" id="busqueda" name="busqueda" class="form-control" placeholder="Búsqueda">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6"></div>
+            <div class="col-3 text-right">
+                <pdf-flexi name="Productos" [rows]="rows" [columnsText]="columnsText" [columns]="columns" tooltip="Exportar a PDF" placement="left"></pdf-flexi>
+                <button tooltip="Agregar" placement="left" class="btn btn-success" data-toggle="modal" (click)="addProduct()">
+                    <i class="fa fa-plus btn-action"></i>
+                    
+                </button>
+            </div>
+        </div>
+        <flexi-loading *ngIf="loadingIndicatorTable"></flexi-loading>
+        <ngx-datatable style="padding: 1rem 1.25rem;" *ngIf="listProducts$ | async" class="bootstrap" [loadingIndicator]="loadingIndicator" [rows]="rows" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="50" [limit]="10">
+            <ngx-datatable-column name="Cód.">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    <a tooltip="Ver detalle" placement="right" role="button" class="link" (click)="detail(row)">{{row.product_code }}</a>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Nombre">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row.name}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Cant.">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row.quantity | number : '1.2-2'}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Costo">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+
+                    {{row.production_cost | number : '1.2-2'}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Precio de Venta">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row.sell_price | number : '1.2-2'}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Origen/destino">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row.origin}}/{{row.usage}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Acciones">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    <i (click)="edit(row)" class="nav-icon fa fa-edit btn-edit btn-action"></i>
+                    <i (click)="remove(row)" class="nav-icon fa fa-trash btn-remove btn-action"></i>
+                    <!-- <i (click)="detail(row)" class="nav-icon fa fa-th-list btn-detail btn-action"></i> -->
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+</div>
+
+
+<div bsModal #modalProduct="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{ mode }} <span *ngIf="mode === 'Agregar' || mode === 'Editar'">un</span> <span *ngIf="mode === 'Detalle'">del</span> producto</h4>
+                <button type="button" class="close" (click)="modalProduct.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="form" class="form-horizontal" [className]="(mode === 'Detalle')?'striped-flexi':''">
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label" for="hf-name">Tipo <span *ngIf="mode !== 'Detalle' ">*</span></label>
+                        <div class="col-md-9">
+                            <ng-select *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="typeproductId" placeholder="Seleccione el tipo " [items]="productTypes$" bindLabel="description" bindValue="id">
+                            </ng-select>
+                            <span *ngIf="mode === 'Detalle' ">{{currentProduct.typeproduct.description}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Nombre <span *ngIf="mode !== 'Detalle' ">*</span></label>
+                        <div class="col-md-9 ">
+                            <ng-select *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="name" placeholder="Seleccione el nombre " [items]="productsName" bindLabel="name" bindValue="name">
+                            </ng-select>
+                            <span *ngIf="mode === 'Detalle' ">{{currentProduct.name}}</span>
+                            <input #newname *ngIf="form.get('name').value === 'Crear nuevo producto'" formControlName="newname" class="form-control product-new" type="text" placeholder="Ingrese nombre del nuevo producto">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label" for="hf-name">Cantidad <span *ngIf="mode !== 'Detalle' ">*</span></label>
+                        <div class="col-md-9">
+                            <input mask="separator.2" thousandSeparator="." decimalMarker="," [ngClass]="form.get('quantity').valid?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="quantity" type="text" id="hf-name" name="hf-name" class="form-control"
+                                placeholder="Ingrese la cantidad">
+                            <span *ngIf="mode === 'Detalle' ">{{ currentProduct.quantity | number : '1.2-2'}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Ancho</label>
+                        <div class="col-md-9 ">
+                            <input [ngClass]="(form.get('width').value && form.get('width').value.length > 0) ?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" [numbersOnly]='true' formControlName="width" type="text" id="hf-name " name="hf-name " class="form-control "
+                                placeholder="Ingrese el ancho ">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProduct.width | number : '1.2-2'}}</span>
+                        </div>
+                    </div>
+
+                    <div class=" form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Largo</label>
+                        <div class="col-md-9 ">
+                            <input [ngClass]="(form.get('long').value && form.get('long').value.length > 0)?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" [numbersOnly]='true' formControlName="long" type="text" id="hf-name " name="hf-name " class="form-control "
+                                placeholder="Ingrese el largo ">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProduct.long | number : '1.2-2'}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Altura</label>
+                        <div class="col-md-9 ">
+                            <input [ngClass]="(form.get('height').value && form.get('height').value.length > 0)?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" [numbersOnly]='true' formControlName="height" type="text" id="hf-name " name="hf-name " class="form-control "
+                                placeholder="Ingrese la altura ">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProduct.height | number : '1.2-2'}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Densidad</label>
+                        <div class="col-md-9 ">
+                            <ng-select *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="densityId" placeholder="Seleccione la densidad " [items]="densities$ | async" bindLabel="description" bindValue="id">
+                            </ng-select>
+                            <span *ngIf="mode === 'Detalle' ">{{currentProduct.density.description}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Costo de produccion <span *ngIf="mode !== 'Detalle' ">*</span></label>
+                        <div class="col-md-9 ">
+                            <input currencyMask [ngClass]="form.get('production_cost').valid?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" [numbersOnly]='false' formControlName="production_cost" type="text" id="hf-name " name="hf-name " class="form-control " placeholder="Ingrese el costo de produccion ">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProduct.production_cost | number : '1.2-2'}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Margen de Utilidad <span *ngIf="mode !== 'Detalle' ">*</span></label>
+                        <div class="col-md-9 ">
+                            <input currencyMask [options]="{ prefix: ' ', thousands: '.', decimal: ',', precision: '2' }" [ngClass]="form.get('profit_margin').valid?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="profit_margin" type="text" id="hf-name "
+                                name="hf-name " class="form-control " placeholder="Ingrese el margen de Utilidad. Ejemplo: 0,35">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProduct.profit_margin | number : '1.2-2'}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Precio de venta sin IVA <span *ngIf="mode !== 'Detalle' ">*</span></label>
+                        <div class="col-md-9 ">
+                            <input currencyMask [ngClass]="form.get('sell_price').valid?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" [numbersOnly]='false' formControlName="sell_price" type="text" id="hf-name " name="hf-name " class="form-control " placeholder="Ingrese precio de venta sin IVA">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProduct.sell_price | number : '1.2-2'}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row " *ngIf="mode === 'Agregar' || mode === 'Editar'">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Impuesto <span *ngIf="mode !== 'Detalle' ">*</span></label>
+                        <div class="col-md-9 ">
+                            <ng-select *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="taxesId" placeholder="Seleccione el impuesto " [items]="taxes$ | async" bindLabel="description" bindValue="id">
+                            </ng-select>
+                            <span *ngIf="mode === 'Detalle' ">{{currentSupplie.status}}</span>
+                        </div>
+                    </div>
+                    <!-- 
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Origen</label>
+                        <div class="col-md-9 ">
+                            <input [ngClass]="form.get('origin').valid?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="origin" type="text" id="hf-name " name="hf-name " class="form-control " placeholder="Ingrese el origen ">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProduct.origin}}</span>
+                        </div>
+                    </div> -->
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Uso <span *ngIf="mode !== 'Detalle' ">*</span></label>
+                        <div class="col-md-9 ">
+                            <ng-select *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="usage" placeholder="Seleccione el destino " [items]="destines" bindLabel="description" bindValue="description">
+                            </ng-select>
+                            <span *ngIf="mode === 'Detalle' ">{{currentProduct.usage}}</span>
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-group row " *ngIf="mode === 'Agregar' || mode === 'Editar'">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Estado</label>
+                        <div class="col-md-9 ">
+                            <input [ngClass]="form.get('status').valid?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="status" type="text" id="hf-name " name="hf-name " class="form-control " placeholder="Ingrese el estado ">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProduct.status}}</span>
+                        </div>
+                    </div> -->
+
+                    <!-- <div class="form-group row " *ngIf="mode === 'Agregar' || mode === 'Editar'">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Proveedor</label>
+                        <div class="col-md-9 ">
+                            <ng-select *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="provider_id" placeholder="Seleccione el proveedor " [items]="providers$ | async" bindLabel="name" bindValue="id">
+                            </ng-select>
+                            <span *ngIf="mode === 'Detalle' ">{{currentProduct.provider_id}}</span>
+                        </div>
+                    </div> -->
+
+                </form>
+            </div>
+            <div class="modal-footer ">
+                <div class="col-6" *ngIf="mode !== 'Detalle' ">
+                    <span>Todos los campos con asterisco (*) son obligatorios.</span>
+                </div>
+                <div class="col-6 text-right">
+                    <button type="button " class="btn btn-secondary " (click)="modalProduct.hide() ">Cancelar</button>
+                    <button *ngIf="mode === 'Agregar'" [disabled]="!form.valid || loadingIndicatorButton" type="button " class="btn btn-primary " (click)="saveProduct()"><flexi-loading-button *ngIf="loadingIndicatorButton"></flexi-loading-button>Guardar</button>
+                    <button *ngIf="mode === 'Editar'" [disabled]="!form.valid || loadingIndicatorButton" type="button " class="btn btn-primary " (click)="updateProduct()"><flexi-loading-button *ngIf="loadingIndicatorButton"></flexi-loading-button>Actualizar</button>
+                </div>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+
+<div bsModal #modalAlert="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xs" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Alerta</h4>
+                <button type="button" class="close" (click)="modalAlert.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+            <div class="modal-body">
+                ¿Estas seguro que desea eliminar este item?
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-secondary " (click)="modalAlert.hide()">Cancelar</button>
+                <button type="button " class="btn btn-danger " (click)="removed(forRemoved)"><flexi-loading-button *ngIf="loadingIndicatorButton"></flexi-loading-button>Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>

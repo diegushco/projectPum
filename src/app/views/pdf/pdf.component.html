@@ -1,0 +1,18 @@
+<div id="pdfTable" #pdfTable class="hide">
+    <table id="table-info">
+        <thead class="header">
+            <tr>
+                <th *ngFor="let col of columnsText">{{ col }}</th>
+            </tr>
+
+        </thead>
+        <tr *ngFor="let row of rows">
+            <td *ngFor="let col of columns">{{ row[col] }}</td>
+        </tr>
+    </table>
+    <img id="logo" src="assets/img/brand/logo.svg" alt="">
+</div>
+
+<button class="btn btn-pdf" (click)="downloadAsPDF()">
+    <i class="fa fa-file-pdf-o"></i>
+</button>

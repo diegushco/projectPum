@@ -1,0 +1,205 @@
+.header-title {
+    height: 3.5em;
+    background-color: #20a8d8;
+    color: #FFF;
+}
+
+.btn-action {
+    font-size: 18px;
+}
+
+.btn-edit {
+    color: #459bb9;
+    font-size: 1.5em;
+}
+
+.btn-remove {
+    color: rgba(249, 0, 0, 0.53);
+    font-size: 1.5em;
+}
+
+.btn-detail {
+    color: gray;
+}
+
+:host ::ng-deep .ngx-datatable.bootstrap .datatable-body .datatable-body-row {
+    border-top: 1px solid #459bb9 !important;
+}
+
+:host ::ng-deep .ngx-datatable.bootstrap .datatable-body .datatable-body-row.datatable-row-even {
+    background-color: transparent;
+}
+
+:host ::ng-deep .ngx-datatable.bootstrap .datatable-footer {
+    background: #20a8d8;
+}
+
+:host ::ng-deep .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled).active a {
+    background-color: #FFF;
+    color: #459bb9;
+}
+
+:host ::ng-deep .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled) a:hover {
+    background-color: #FFF;
+    color: #459bb9;
+}
+
+:host ::ng-deep .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled):hover a {
+    background-color: #FFF;
+    color: #459bb9;
+}
+
+:host ::ng-deep .datatable-header-cell-label {
+    font-weight: 500;
+}
+
+.link {
+    color: blue !important;
+    cursor: pointer;
+}
+
+.link:hover {
+    text-decoration: underline !important;
+    cursor: pointer;
+}
+
+.col-form-label {
+    line-height: 0.5;
+}
+
+.form-control {
+    height: calc(1.5em + 0.35rem + 2px);
+}
+
+.headerInvoice {
+    padding: 1.3em 0px;
+    font-weight: bold;
+    color: #5c6773;
+}
+
+.totales {
+    text-align: right;
+    padding-right: 4em;
+    font-weight: bold;
+    color: #5c6773;
+}
+
+.col-10 {
+    flex: 0 0 2%;
+    max-width: 2%;
+}
+
+.col-20 {
+    flex: 0 0 7%;
+    max-width: 7%;
+}
+
+.col-30 {
+    flex: 0 0 11%;
+    max-width: 11%;
+}
+
+.col-40 {
+    flex: 0 0 14%;
+    max-width: 14%;
+}
+
+.col-50 {
+    flex: 0 0 8%;
+    max-width: 8%;
+}
+
+.col-60 {
+    flex: 0 0 8%;
+    max-width: 8%;
+}
+
+.col-70 {
+    flex: 0 0 7%;
+    max-width: 7%;
+}
+
+.col-80 {
+    flex: 0 0 10%;
+    max-width: 10%;
+}
+
+.col-90 {
+    flex: 0 0 11%;
+    max-width: 11%;
+}
+
+.col-100 {
+    flex: 0 0 10%;
+    max-width: 10%;
+}
+
+.col-110 {
+    flex: 0 0 10%;
+    max-width: 10%;
+}
+
+@media (min-width: 1200px) {
+    .modal-xl {
+        max-width: 98%;
+    }
+}
+
+.col {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.form-control {
+    height: calc(1.5em + 0.35rem + 10px);
+}
+
+.btn-style {
+    padding-top: 38%;
+}
+
+.btn-add {
+    margin: 15px;
+}
+
+.total-right>div {
+    margin-top: 0.9em;
+    font-weight: bold
+}
+
+.total-left>div {
+    margin-top: 0.5em;
+    ;
+}
+
+.header-invoice {
+    margin-bottom: 1em;
+}
+
+.bg-invoice {
+    background-color: #eee;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.items-invoice {
+    margin-bottom: 4px;
+}
+
+.error {
+    font-style: italic;
+    color: red;
+}
+
+.icon-add::before {
+    color: #eb7777;
+    ;
+}
+
+.btn-secondary {
+    background-color: #eaeaea;
+}
+
+.blink {
+    border: 1px solid #54a9d8;
+}

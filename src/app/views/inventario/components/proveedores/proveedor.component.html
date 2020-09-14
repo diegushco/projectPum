@@ -1,0 +1,223 @@
+<div class="card">
+    <div class="card-header header-title">
+
+        <div class="row">
+            <div class="col-12">
+                <h4><i class="nav-icon fa fa-user-circle-o"></i> Proveedores</h4>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-body" style="padding:0px">
+        <div class="row" style="padding: 1rem 1.25rem;">
+            <div class="col-3 text-left">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        </div>
+                        <input #search type="text" id="busqueda" name="busqueda" class="form-control" placeholder="Búsqueda">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6"></div>
+            <div class="col-3 text-right">
+                <pdf-flexi name="Proveedores" [rows]="rows" [columnsText]="columnsText" [columns]="columns" tooltip="Exportar a PDF" placement="left"></pdf-flexi>
+                <button tooltip="Agregar" placement="left" class="btn btn-success" data-toggle="modal" (click)="addProvider()">
+                    <i class="fa fa-plus btn-action"></i>
+                    
+                </button>
+            </div>
+        </div>
+        <flexi-loading *ngIf="loadingIndicatorTable"></flexi-loading>
+        <ngx-datatable style="padding: 1rem 1.25rem;" *ngIf="listProviders$ | async" class="bootstrap" [loadingIndicator]="loadingIndicator" [rows]="rows" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="50" [limit]="10">
+            <ngx-datatable-column name="Cód.">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    <a tooltip="Ver detalle" placement="right" role="button" class="link" (click)="detail(row)">{{row.provider_code }}</a>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Nombre">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row.name}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="NIT">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row.nit}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Departamento">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row.department_name}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Ciudad">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row.city_name}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Direccion">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row.address}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Correo">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row.email}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Telefono">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row.phone1}}
+                </ng-template>
+            </ngx-datatable-column>
+
+
+            <ngx-datatable-column name="Acciones">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    <i (click)="edit(row)" class="nav-icon fa fa-edit btn-edit btn-action"></i>
+                    <i (click)="remove(row)" class="nav-icon fa fa-trash btn-remove btn-action"></i>
+                    <!-- <i (click)="detail(row)" class="nav-icon fa fa-th-list btn-detail btn-action"></i> -->
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+</div>
+
+
+<div bsModal #modalProvider="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{ mode }} <span *ngIf="mode === 'Agregar' || mode === 'Editar'">un</span> <span *ngIf="mode === 'Detalle'">del</span> proveedor</h4>
+                <button type="button" class="close" (click)="modalProvider.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="form" class="form-horizontal" [className]="(mode === 'Detalle')?'striped-flexi':''">
+                    <div *ngIf="mode !== 'Agregar' " class="form-group row">
+                        <label class="col-md-3 col-form-label" for="hf-name">Codigo de proveedor</label>
+                        <div class="col-md-9">
+                            <input [ngClass]="form.get('provider_code').valid?'is-valid':''" *ngIf="mode === 'Editar'" formControlName="provider_code" type="text" id="hf-name" name="hf-name" class="form-control" placeholder="Ingrese el codigo de proveedor">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProvider.provider_code}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label" for="hf-name">Nombre</label>
+                        <div class="col-md-9">
+                            <input [ngClass]="form.get('name').valid?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="name" type="text" id="hf-name" name="hf-name" class="form-control" placeholder="Ingrese el nombre">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProvider.name}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">NIT</label>
+                        <div class="col-md-9 ">
+                            <input [ngClass]="form.get('nit').valid?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="nit" type="text" id="hf-name " name="hf-name " class="form-control " placeholder="Ingrese el NIT ">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProvider.nit}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Departamento</label>
+                        <div class="col-md-9 ">
+                            <ng-select *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="departmentId" placeholder="Seleccione el departamento " [items]="deparments" bindLabel="name" bindValue="id">
+                            </ng-select>
+
+                            <span *ngIf="mode === 'Detalle' ">{{currentProvider.departmentId}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label" for="hf-name">Ciudad</label>
+                        <div class="col-md-9">
+                            <ng-select *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="cityId" placeholder="Seleccione la ciudad " [items]="cities" bindLabel="name" bindValue="id">
+                            </ng-select>
+                            <span *ngIf="mode === 'Detalle' ">{{currentProvider.cityId}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Direccion</label>
+                        <div class="col-md-9 ">
+                            <input [ngClass]="form.get('address').valid?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="address" type="text" id="hf-name " name="hf-name " class="form-control " placeholder="Ingrese la direccion ">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProvider.address}}</span>
+                        </div>
+                    </div>
+
+                    <div class=" form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Correo</label>
+                        <div class="col-md-9 ">
+                            <input [ngClass]="form.get('email').valid?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="email" type="email" id="hf-name " name="hf-name " class="form-control " placeholder="Ingrese el correo electronico ">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProvider.email}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Telefono 1</label>
+                        <div class="col-md-9 ">
+                            <input [ngClass]="form.get('phone1').valid?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="phone1" type="text" id="hf-name " name="hf-name " class="form-control " placeholder="Ingrese el telefono ">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProvider.phone1}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Telefono 2</label>
+                        <div class="col-md-9 ">
+                            <input [ngClass]="form.get('phone2').value !== null && form.get('phone2').value !== '' && form.get('phone2').valid?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="phone2" type="text" id="hf-name " name="hf-name " class="form-control "
+                                placeholder="Ingrese un telefono alternativo ">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProvider.phone2}}</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-md-3 col-form-label " for="hf-name ">Web Site</label>
+                        <div class="col-md-9 ">
+                            <input [ngClass]="form.get('website').value !== null && form.get('website').value !== '' && form.get('website').valid?'is-valid':''" *ngIf="mode === 'Agregar' || mode === 'Editar'" formControlName="website" type="text" id="hf-name " name="hf-name " class="form-control "
+                                placeholder="Ingrese la pagina web ">
+                            <span *ngIf="mode === 'Detalle' ">{{currentProvider.website}}</span>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-secondary " (click)="modalProvider.hide() ">Cancelar</button>
+                <button *ngIf="mode === 'Agregar'" [disabled]="!form.valid || loadingIndicatorButton" type="button " class="btn btn-primary " (click)="saveProvider()"><flexi-loading-button *ngIf="loadingIndicatorButton"></flexi-loading-button>Guardar</button>
+                <button *ngIf="mode === 'Editar'" [disabled]="!form.valid || loadingIndicatorButton" type="button " class="btn btn-primary " (click)="updateProvider()"><flexi-loading-button *ngIf="loadingIndicatorButton"></flexi-loading-button>Actualizar</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div bsModal #modalAlert="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xs" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Alerta</h4>
+                <button type="button" class="close" (click)="modalAlert.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+            <div class="modal-body">
+                ¿Estas seguro que desea eliminar este item?
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-secondary " (click)="modalAlert.hide()">Cancelar</button>
+                <button type="button " class="btn btn-danger " (click)="removed(forRemoved)"><flexi-loading-button *ngIf="loadingIndicatorButton"></flexi-loading-button>Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>

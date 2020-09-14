@@ -1,0 +1,72 @@
+.header-title {
+    height: 3.5em;
+    background-color: #20a8d8;
+    color: #FFF;
+}
+
+.btn-action {
+    font-size: 18px;
+}
+
+.btn-edit {
+    color: #459bb9;
+    font-size: 1.5em;
+}
+
+.btn-remove {
+    color: rgba(249, 0, 0, 0.53);
+    font-size: 1.5em;
+}
+
+.btn-detail {
+    color: gray;
+}
+
+:host ::ng-deep .ngx-datatable.bootstrap .datatable-body .datatable-body-row {
+    border-top: 1px solid #459bb9 !important;
+}
+
+:host ::ng-deep .ngx-datatable.bootstrap .datatable-body .datatable-body-row.datatable-row-even {
+    background-color: transparent;
+}
+
+:host ::ng-deep .ngx-datatable.bootstrap .datatable-footer {
+    background: #20a8d8;
+}
+
+:host ::ng-deep .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled).active a {
+    background-color: #FFF;
+    color: #459bb9;
+}
+
+:host ::ng-deep .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled) a:hover {
+    background-color: #FFF;
+    color: #459bb9;
+}
+
+:host ::ng-deep .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled):hover a {
+    background-color: #FFF;
+    color: #459bb9;
+}
+
+:host ::ng-deep .datatable-header-cell-label {
+    font-weight: 500;
+}
+
+.link {
+    color: blue !important;
+    cursor: pointer;
+}
+
+.link:hover {
+    text-decoration: underline !important;
+    cursor: pointer;
+}
+
+.col-form-label {
+    line-height: 0.5;
+}
+
+.form-control {
+    height: calc(1.5em + 0.35rem + 2px);
+}
